@@ -7,17 +7,22 @@ function App() {
   const clientID =
     "155420643556-kumc4k1g46jq1bmoqqjavm5h9ltas5ok.apps.googleusercontent.com";
   const [user, setUser] = useState({});
-  const [loggeIn, setLoggetInfo] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const onSuccess = (response) => {
-    setUser(response.profileObj);
-    document.getElementsByClassName("btn").hidden = true;
+    setUser({
+      ...response.profileObj,
+      userId: response.googleId,
+      email: response.profileObj.email,
+    });
+    setLoggedIn(true);
   };
   const onFailure = (response) => {
     console.log("Something went wrong");
   };
   const handleLogout = () => {
     setUser({});
+    setLoggedIn(false);
   };
   useEffect(() => {
     function start() {
@@ -26,8 +31,8 @@ function App() {
       });
     }
     gapi.load("client:auth2", start);
-  });
-  console.log(loggeIn, setLoggetInfo, handleLogout);
+  }, []);
+  console.log(loggedIn, handleLogout);
   return (
     <div className="center">
       <h1>Login</h1>
@@ -37,15 +42,20 @@ function App() {
           clientId={clientID}
           onSuccess={onSuccess}
           onFailure={onFailure}
-          buttonText="Continue  with Google"
+          buttonText="Continue with Google"
           cookiePolicy={"single_host_origin"}
         />
       </div>
 
-      <div className={user ? "profile" : "hidden"}>
-        <img src={user.imageUrl} alt="Se supone qué tengo foto en google" />
-        <h3>{user.name}</h3>
-      </div>
+      {loggedIn && (
+        <div className="profile">
+          <img src={user.imageUrl} alt="User Profile" />
+          <h3>{user.name}</h3>
+          <p>Email: {user.email}</p>
+          <p>User ID: {user.userId}</p>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      )}
     </div>
   );
 }
