@@ -1,12 +1,14 @@
-import logo from "./logo.svg";
 import "./App.css";
+import { useState, useEffect } from "react";
 import { gapi } from "gapi-script";
 import GoogleLogin from "react-google-login";
-import { useEffect } from "react";
 
 function App() {
   const clientID =
     "155420643556-kumc4k1g46jq1bmoqqjavm5h9ltas5ok.apps.googleusercontent.com";
+  const [user, setUser] = useState({});
+  const [loggeIn, setLoggetInfo] = useState(false);
+
   const onSuccess = (response) => {
     setUser(response.profileObj);
     document.getElementsByClassName("btn").hidden = true;
@@ -25,7 +27,7 @@ function App() {
     }
     gapi.load("client:auth2", start);
   });
-
+  console.log(loggeIn, setLoggetInfo, handleLogout);
   return (
     <div className="center">
       <h1>Login</h1>
@@ -40,8 +42,8 @@ function App() {
         />
       </div>
 
-      <div class={user ? "profile" : "hidden"}>
-        <img src={user.imageUrl} />
+      <div className={user ? "profile" : "hidden"}>
+        <img src={user.imageUrl} alt="Se supone qué tengo foto en google" />
         <h3>{user.name}</h3>
       </div>
     </div>
