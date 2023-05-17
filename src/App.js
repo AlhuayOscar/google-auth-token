@@ -2,12 +2,15 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { gapi } from "gapi-script";
 import GoogleLogin from "react-google-login";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const clientID =
     "155420643556-kumc4k1g46jq1bmoqqjavm5h9ltas5ok.apps.googleusercontent.com";
   const [user, setUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
+  const [successCount, setSuccessCount] = useState(0);
+
   const onSuccess = (response) => {
     const token = generateToken(64);
     setUser({
@@ -18,7 +21,10 @@ function App() {
     });
     setLoggedIn(true);
     localStorage.setItem("token", token);
+
+    setSuccessCount((prevCount) => prevCount + 1);
   };
+
   const onFailure = (response) => {
     console.log("Something went wrong");
   };
